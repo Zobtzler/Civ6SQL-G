@@ -21,9 +21,9 @@ namespace Civ6ModdingAssistant
         //SqlConnection Connection;
         //string ConnectionString;
 
-        public string[] CityList, CitizenList, CitizenType, Features, Resources, Terrains, ActiveStartBiases;
+        public string[] CityList, CitizenList, CitizenType, Features, Resources, Terrains, ActiveStartBiases, Civilizations;
 
-        List<string> FeaturesList = new List<string>(), ResourcesList = new List<string>(), TerrainsList = new List<string>(), ActiveStartBiasesList = new List<string>();
+        List<string> FeaturesList = new List<string>(), ResourcesList = new List<string>(), TerrainsList = new List<string>(), ActiveStartBiasesList = new List<string>(), CivilizationsList = new List<string>();
 
         public Form1()
         {
@@ -37,6 +37,62 @@ namespace Civ6ModdingAssistant
             CivilizationEthnicity.Items.Add("European");
             CivilizationEthnicity.Items.Add("Mediterranean");
             CivilizationEthnicity.Items.Add("South American");
+
+            //Civilizations
+            CivilizationsList.Add("America");
+            CivilizationsList.Add("Arabia");
+            CivilizationsList.Add("Australia");
+            CivilizationsList.Add("Aztec");
+            CivilizationsList.Add("Brazil");
+            CivilizationsList.Add("Canada");
+            CivilizationsList.Add("China");
+            CivilizationsList.Add("Cree");
+            CivilizationsList.Add("Egypt");
+            CivilizationsList.Add("England");
+            CivilizationsList.Add("France");
+            CivilizationsList.Add("Georgia");
+            CivilizationsList.Add("Germany");
+            CivilizationsList.Add("Greece");
+            CivilizationsList.Add("Hungary");
+            CivilizationsList.Add("Inca");
+            CivilizationsList.Add("India");
+            CivilizationsList.Add("Indonesia");
+            CivilizationsList.Add("Japan");
+            CivilizationsList.Add("Khmer");
+            CivilizationsList.Add("Kongo");
+            CivilizationsList.Add("Korea");
+            CivilizationsList.Add("Macedon");
+            CivilizationsList.Add("Mali");
+            CivilizationsList.Add("Maori");
+            CivilizationsList.Add("Mapuche");
+            CivilizationsList.Add("Mongolia");
+            CivilizationsList.Add("Netherlands");
+            CivilizationsList.Add("Norway");
+            CivilizationsList.Add("Nubia");
+            CivilizationsList.Add("Ottoman");
+            CivilizationsList.Add("Persia");
+            CivilizationsList.Add("Phoenicia");
+            CivilizationsList.Add("Poland");
+            CivilizationsList.Add("Rome");
+            CivilizationsList.Add("Russia");
+            CivilizationsList.Add("Scotland");
+            CivilizationsList.Add("Scythia");
+            CivilizationsList.Add("Spain");
+            CivilizationsList.Add("Sumeria");
+            CivilizationsList.Add("Sweden");
+            CivilizationsList.Add("Zulu");
+            Civilizations = CivilizationsList.ToArray();
+
+            LeaderCivilization2.Items.Add("");
+            LeaderCivilization2.Enabled = false;
+            LeaderCivilization3.Items.Add("");
+            LeaderCivilization3.Enabled = false;
+            foreach (var civ in Civilizations)
+            {
+                LeaderCivilization1.Items.Add(civ);
+                LeaderCivilization2.Items.Add(civ);
+                LeaderCivilization3.Items.Add(civ);
+            }
 
             //Civ Start Biases
             CivilizationStartBiasMinor.Enabled = false;
@@ -164,20 +220,84 @@ namespace Civ6ModdingAssistant
             else LeaderTabController.Enabled = false;
         }
 
+        private void CivilizationName_TextChanged(object sender, EventArgs e)
+        {
+            LeaderCivilization1.Items.Clear();
+            LeaderCivilization2.Items.Clear();
+            LeaderCivilization3.Items.Clear();
+
+            LeaderCivilization2.Items.Add("");
+            LeaderCivilization3.Items.Add("");
+            if (CivilizationName.Text.Trim() != null && CivilizationName.Text.Trim() != "")
+            {
+                LeaderCivilization1.Items.Add(CivilizationName.Text.Trim());
+                LeaderCivilization2.Items.Add(CivilizationName.Text.Trim());
+                LeaderCivilization3.Items.Add(CivilizationName.Text.Trim());
+            }
+
+            foreach (var civ in Civilizations)
+            {
+                LeaderCivilization1.Items.Add(civ);
+                LeaderCivilization2.Items.Add(civ);
+                LeaderCivilization3.Items.Add(civ);
+            }
+        }
+
+        private void Sex_Click(object sender, EventArgs e)
+        {
+            if (Sex.Text == "Male")
+            {
+                Sex.Text = "Female";
+            }
+            else Sex.Text = "Male";
+        }
+
         private void LeaderGenerate_Click(object sender, EventArgs e)
         {
             string LeaderFileText = "";
 
             string Types = "INSERT INTO Types (Type, Kind)\nVALUES\n" +
-                "('LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "', 'KIND_LEADER'),\n" +
-                // add agendas to the database
-                "('TRAIT_AGENDA_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderHistoricalAgendaName.Text) + "', '');\n\n";
+                "('LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_" + TextConvert(LeaderCivilization1.Text) + "', 'KIND_LEADER')";
+            if (LeaderCivilization2.Text.Trim() != null && LeaderCivilization2.Text.Trim() != "")
+            {
+                Types += ",\n('LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_" + TextConvert(LeaderCivilization2.Text) + "', 'KIND_LEADER')";
+            }
+            if (LeaderCivilization3.Text.Trim() != null && LeaderCivilization3.Text.Trim() != "")
+            {
+                Types += ",\n('LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_" + TextConvert(LeaderCivilization3.Text) + "', 'KIND_LEADER')";
+            }
+            // add agendas to the database
+            Types += ",\n('TRAIT_AGENDA_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderHistoricalAgendaName.Text) + "', '')";
+            Types += ";\n\n";
 
-            string Leaders = "INSERT INTO Leaders (LeaderType, Name, InheritFrom, SceneLayers)\nVALUES\n" +
-                "('LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "'," +
-                "'LOC_LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_NAME','LEADER_DEFAULT',4)";
+            string Leaders = "INSERT INTO Leaders (LeaderType, Name, Sex, InheritFrom, SceneLayers)\nVALUES\n" +
+                ",\n('LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_" + TextConvert(LeaderCivilization1.Text) + "'," +
+                "'LOC_LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_NAME', '" + Sex.Text + "','LEADER_DEFAULT',4)";
+            string DuplicateLeaders = "";
 
-            string CivilizationLeaders; //Leaders.xml instead of Civilizations.xml
+            string CivilizationLeaders = ""; //Fix Capitals list and database
+
+            if (LeaderCivilization2.Text.Trim() != null && LeaderCivilization2.Text.Trim() != "")
+            {
+                Leaders += ",\n('LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_" + TextConvert(LeaderCivilization2.Text) + "'," +
+                    "'LOC_LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_NAME', '" + Sex.Text + "','LEADER_DEFAULT',4)";
+
+                DuplicateLeaders = "INSERT INTO DuplicateLeaders (LeaderType, OtherLeaderType)\nValues\n" +
+                    "('LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_" + TextConvert(LeaderCivilization1.Text) + "', " +
+                    "'LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_" + TextConvert(LeaderCivilization2.Text) + "')";
+            }
+            if (LeaderCivilization3.Text.Trim() != null && LeaderCivilization3.Text.Trim() != "")
+            {
+                Leaders += ",\n('LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_" + TextConvert(LeaderCivilization3.Text) + "'," +
+                    "'LOC_LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_NAME', '" + Sex.Text + "','LEADER_DEFAULT',4)";
+
+                DuplicateLeaders += ",\n('LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_" + TextConvert(LeaderCivilization1.Text) + "', " +
+                    "'LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_" + TextConvert(LeaderCivilization3.Text) + "')" +
+                    ",\n('LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_" + TextConvert(LeaderCivilization2.Text) + "', " +
+                    "'LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_" + TextConvert(LeaderCivilization3.Text) + "')";
+            }
+            Leaders += ";\n\n";
+            DuplicateLeaders += ";\n\n"; //Leaders.xml instead of Civilizations.xml
 
             string LeaderQuotes = "";
 
@@ -302,6 +422,33 @@ namespace Civ6ModdingAssistant
         {
             input = Regex.Replace(input.ToUpper().Trim(), @"\s+", "_");
             return new string(input.Where(c => !char.IsWhiteSpace(c)).ToArray());
+        }
+
+        private void LeaderCivilization1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (LeaderCivilization1.Text == null || LeaderCivilization1.Text == "")
+            {
+                LeaderCivilization2.Enabled = false;
+                LeaderCivilization3.Enabled = false;
+                LeaderCivilization2.Text = "";
+                LeaderCivilization3.Text = "";
+            }
+            else LeaderCivilization2.Enabled = true;
+        }
+
+        private void LeaderCivilization2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (LeaderCivilization2.Text == null || LeaderCivilization2.Text == "")
+            {
+                LeaderCivilization3.Enabled = false;
+                LeaderCivilization3.Text = "";
+            }
+            else LeaderCivilization3.Enabled = true;
+        }
+
+        private void LeaderCivilization3_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
 
         private void CivilizationStartBiasMain_SelectedIndexChanged(object sender, EventArgs e)
