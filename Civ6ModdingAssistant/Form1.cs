@@ -267,61 +267,108 @@ namespace Civ6ModdingAssistant
                 Types += ",\n('LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_" + TextConvert(LeaderCivilization3.Text) + "', 'KIND_LEADER')";
             }
             // add agendas to the database
-            Types += ",\n('TRAIT_AGENDA_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderHistoricalAgendaName.Text) + "', '')";
+            Types += ",\n('TRAIT_AGENDA_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderHistoricalAgendaName.Text) + "', 'KIND_TRAIT')";
             Types += ";\n\n";
 
             string Leaders = "INSERT INTO Leaders (LeaderType, Name, Sex, InheritFrom, SceneLayers)\nVALUES\n" +
-                ",\n('LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_" + TextConvert(LeaderCivilization1.Text) + "'," +
-                "'LOC_LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_NAME', '" + Sex.Text + "','LEADER_DEFAULT',4)";
+                "('LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_" + TextConvert(LeaderCivilization1.Text) + "', " +
+                "'LOC_LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_NAME', '" + Sex.Text + "', 'LEADER_DEFAULT',4)";
             string DuplicateLeaders = "";
 
-            string CivilizationLeaders = ""; //Fix Capitals list and database
+            string CivilizationLeaders = "INSERT INTO CivilizationLeaders (CivilizationType, LeaderType, CapitalName)\nVALUES\n" +
+                "('LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_" + TextConvert(LeaderCivilization1.Text) + "',";
+            if (LeaderCivilization1.Text.Trim() == CivilizationName.Text.Trim())
+            {
+                CivilizationLeaders += " 'CIVILIZATION_" + TextConvert(AuthorName.Text) + "_" + TextConvert(CivilizationName.Text) + "', " +
+                    "'')";
+            }
+            else
+            {
+                CivilizationLeaders += " 'CIVILIZATION_" + TextConvert(LeaderCivilization1.Text) + "', " +
+                    "'')";
+            }
+            if (LeaderCivilization3.Text.Trim() == CivilizationName.Text.Trim())
+            {
+                CivilizationLeaders += " 'CIVILIZATION_" + TextConvert(AuthorName.Text) + "_" + TextConvert(CivilizationName.Text) + "', " +
+                    "'')";
+            }
+            //Fix Capitals list and database
 
             if (LeaderCivilization2.Text.Trim() != null && LeaderCivilization2.Text.Trim() != "")
             {
-                Leaders += ",\n('LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_" + TextConvert(LeaderCivilization2.Text) + "'," +
-                    "'LOC_LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_NAME', '" + Sex.Text + "','LEADER_DEFAULT',4)";
+                Leaders += ",\n('LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_" + TextConvert(LeaderCivilization2.Text) + "', " +
+                    "'LOC_LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_NAME', '" + Sex.Text + "', 'LEADER_DEFAULT',4)";
 
                 DuplicateLeaders = "INSERT INTO DuplicateLeaders (LeaderType, OtherLeaderType)\nValues\n" +
                     "('LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_" + TextConvert(LeaderCivilization1.Text) + "', " +
                     "'LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_" + TextConvert(LeaderCivilization2.Text) + "')";
+
+                CivilizationLeaders += ",\n('LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_" + TextConvert(LeaderCivilization2.Text) + "',";
+                if (LeaderCivilization2.Text.Trim() == CivilizationName.Text.Trim())
+                {
+                    CivilizationLeaders += " 'CIVILIZATION_" + TextConvert(AuthorName.Text) + "_" + TextConvert(CivilizationName.Text) + "', " +
+                        "'')";
+                }
+                else
+                {
+                    CivilizationLeaders += " 'CIVILIZATION_" + TextConvert(LeaderCivilization2.Text) + "', " +
+                        "'')";
+                }
             }
             if (LeaderCivilization3.Text.Trim() != null && LeaderCivilization3.Text.Trim() != "")
             {
-                Leaders += ",\n('LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_" + TextConvert(LeaderCivilization3.Text) + "'," +
-                    "'LOC_LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_NAME', '" + Sex.Text + "','LEADER_DEFAULT',4)";
+                Leaders += ",\n('LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_" + TextConvert(LeaderCivilization3.Text) + "', " +
+                    "'LOC_LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_NAME', '" + Sex.Text + "', 'LEADER_DEFAULT',4)";
 
                 DuplicateLeaders += ",\n('LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_" + TextConvert(LeaderCivilization1.Text) + "', " +
                     "'LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_" + TextConvert(LeaderCivilization3.Text) + "')" +
                     ",\n('LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_" + TextConvert(LeaderCivilization2.Text) + "', " +
                     "'LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_" + TextConvert(LeaderCivilization3.Text) + "')";
+
+                CivilizationLeaders += ",\n('LEADER_" + TextConvert(AuthorName.Text) + "_" + TextConvert(LeaderName.Text) + "_" + TextConvert(LeaderCivilization3.Text) + "',";
+                if (LeaderCivilization3.Text.Trim() == CivilizationName.Text.Trim())
+                {
+                    CivilizationLeaders += " 'CIVILIZATION_" + TextConvert(AuthorName.Text) + "_" + TextConvert(CivilizationName.Text) + "', " +
+                        "'')";
+                }
+                else
+                {
+                    CivilizationLeaders += " 'CIVILIZATION_" + TextConvert(LeaderCivilization3.Text) + "', " +
+                        "'')";
+                }
             }
             Leaders += ";\n\n";
-            DuplicateLeaders += ";\n\n"; //Leaders.xml instead of Civilizations.xml
+            if (DuplicateLeaders != "") DuplicateLeaders += ";\n\n"; 
+            CivilizationLeaders += ";\n\n"; //Leaders.xml instead of Civilizations.xml
 
             string LeaderQuotes = "";
 
             string LeaderTraits = "";
 
-            string Traits;
+            string Traits = "";
 
-            string TraitsModifiers;
+            string TraitModifiers = "";
 
-            string AiListTypes;
+            string AiListTypes = "";
 
-            string Agendas;
+            string Agendas = "";
 
-            string HistoricalAgendas;
+            string HistoricalAgendas = "";
 
-            string AgendaTraits;
+            string AgendaTraits = "";
 
-            string ExclusiveAgendas;
+            string ExclusiveAgendas = "";
 
-            string Modifiers;
+            string Modifiers = "";
 
-            string ModifierArguments;
+            string ModifierArguments = "";
 
-            string ModifierStrings;
+            string ModifierStrings = "";
+
+            Console.WriteLine(Types + Leaders + DuplicateLeaders + CivilizationLeaders + 
+                LeaderQuotes + LeaderTraits + Traits + TraitModifiers + AiListTypes + Agendas + 
+                HistoricalAgendas + AgendaTraits + ExclusiveAgendas + Modifiers + 
+                ModifierArguments + ModifierStrings);
         }
 
         private void CivilizationGenerate_Click(object sender, EventArgs e)
@@ -341,7 +388,7 @@ namespace Civ6ModdingAssistant
                 if (!First) CityNames += ",\n";
                 First = false;
                 CityNames += "('CIVILIZATION_" + TextConvert(AuthorName.Text) + "_" + TextConvert(CivilizationName.Text) + "', " +
-                    "'LOC_CITY_NAME_" + TextConvert(AuthorName.Text) + "_" + TextConvert(CivilizationName.Text) + "_" + CityCount + "')";
+                    "'LOC_CITY_NAME_" + TextConvert(AuthorName.Text) + "_" + TextConvert(word) + "')";//TextConvert(CivilizationName.Text) + "_" + CityCount + "')";
             }
             CityNames += ";\n\n";
 
